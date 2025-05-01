@@ -81,6 +81,19 @@ local function init_database()
 		return false
 	end
 
+	-- create indices
+	success_idx, err_idx = pcall(function()
+		db:eval([[
+      CREATE INDEX IF NOT EXISTS idx_habit_instance_timestamp
+      ON habit_instances(instance_timestamp)
+      ]])
+	end)
+
+	if not success_idx then
+		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.leveles.ERROR)
+		return false
+	end
+
 	return true
 end
 
