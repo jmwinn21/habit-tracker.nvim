@@ -73,11 +73,8 @@ local function init_database()
       ]])
 	end)
 
-	-- TODO: create index for the instance_timstamp column
-	-- TODO: create foreign key for habit_id => habit.id
-
 	if not success_idx then
-		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.leveles.ERROR)
+		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.levels.ERROR)
 		return false
 	end
 
@@ -90,8 +87,20 @@ local function init_database()
 	end)
 
 	if not success_idx then
-		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.leveles.ERROR)
+		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.levels.ERROR)
 		return false
+	end
+
+	local success_fk, err_fk = pcall(function()
+		db:eval([[
+    ALTER TABLE habit_instances ADD CONSTRAINT fk_habit_id_habits
+    FOREIGN KEY (habit_id)
+    REFERENCES habits(id)
+    ]])
+	end)
+
+	if not success_fk then
+		vim.notify("Failed to create foriegn key constraint" .. tostring(err_idx), vim.log.levels.ERROR)
 	end
 
 	return true
