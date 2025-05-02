@@ -52,7 +52,7 @@ local function init_database()
 			-- define the habit instances table
 			habit_instances = {
 				id = true,
-				habit_id = "integer", -- INTEGER NOT NULL
+				FOREIGN KEY(habit_id) REFERENCES habits(id),
 				instance_timestamp = "text", -- TEXT NOT NULL
 			},
 		}):open()
@@ -73,18 +73,7 @@ local function init_database()
       ]])
 	end)
 
-	if not success_idx then
-		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.levels.ERROR)
-		return false
-	end
-
-	-- create indices
-	success_idx, err_idx = pcall(function()
-		db:eval([[
-      CREATE INDEX IF NOT EXISTS idx_habit_instance_timestamp
-      ON habit_instances(instance_timestamp)
-      ]])
-	end)
+	-- TODO: create foreign key for habit_id => habit.id
 
 	if not success_idx then
 		vim.notify("Failed to create index: " .. tostring(err_idx), vim.log.levels.ERROR)
