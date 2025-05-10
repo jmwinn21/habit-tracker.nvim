@@ -52,7 +52,7 @@ local function init_database()
 			-- define the habit instances table
 			habit_instances = {
 				id = true,
-				FOREIGN KEY(habit_id) REFERENCES habits(id),
+				habit_id = "integer", -- INTEGER NOT NULL
 				instance_timestamp = "text", -- TEXT NOT NULL
 			},
 		}):open()
